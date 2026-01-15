@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/FPSCharacterInterface.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
-class AFPSWeaponBase;
 class USkeletalMeshComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
 UCLASS()
-class ARENAFPS_API AFPSCharacter : public ACharacter
+class ARENAFPS_API AFPSCharacter : public ACharacter, public IFPSCharacterInterface
 {
 	GENERATED_BODY()
 
@@ -30,7 +30,24 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
+
+public:
+	/* ~Begin IFPSCharacterInterface Override */
+	virtual void AttachWeaponToActor(AFPSWeaponBase* WeaponClass) override;
+	/* ~End IFPSCharacterInterface Override */
+
+
 protected:
+	/* Sockets */
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	FName HeadSocketName;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	FName LeftHandSocketName;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	FName RightHandSocketName;
+
 	/* Components */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCameraComponent> CameraComp;

@@ -2,23 +2,41 @@
 
 
 #include "Weapon/FPSWeaponBase.h"
+#include "Components/SphereComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Interface/FPSCharacterInterface.h"
 
-// Sets default values
+
 AFPSWeaponBase::AFPSWeaponBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	SphereCollisionComp = CreateDefaultSubobject<USphereComponent>("SphereCollisionComp");
+	SphereCollisionComp->SetupAttachment(GetRootComponent());
+	SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSWeaponBase::OnOverlap);
+
+	FPWeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("FPWeaponMesh");
+	FPWeaponMesh->SetupAttachment(GetRootComponent());
+
+	TPWeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("TPWeaponMesh");
+	TPWeaponMesh->SetupAttachment(GetRootComponent());
 }
 
-// Called when the game starts or when spawned
+void AFPSWeaponBase::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!GetActorOwner())
+		Cast<IFPSCharacterInterface>(OtherActor)->AttachWeaponToActor(this);
+}
+
+
 void AFPSWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
+
 void AFPSWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
