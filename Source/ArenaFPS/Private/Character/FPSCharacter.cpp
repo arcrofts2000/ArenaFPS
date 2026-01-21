@@ -7,6 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Weapon/FPSWeaponBase.h"
+#include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -64,6 +66,28 @@ void AFPSCharacter::AttachWeaponToActor(AFPSWeaponBase* WeaponClass)
 
 	WeaponClass->GetTPWeaponMesh()->AttachToComponent(MultiplayerMeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, RightHandSocketName);
 	WeaponClass->GetFPWeaponMesh()->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, RightHandSocketName);
+
+	// Setting up Input
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = UGameplayStatics::GetPlayerController(GetWorld(),0)->
+		GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	
+	Subsystem->AddMappingContext(WeaponClass->IMC_Weapon, 1);
+	if (UEnhancedInputComponent* InputComp = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		InputComp->BindAction(WeaponClass->Input_Fire, ETriggerEvent::Triggered, WeaponClass, &AFPSWeaponBase::OnFire_Implementation);
+	}
+
+}
+
+FHitResult AFPSCharacter::GetLookLocation(FVector StartLocation, float ShotDistance)
+{
+	FVector EndLocation = (CameraComp->GetForwardVector() * ShotDistance) + CameraComp->GetComponentLocation();
+
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_Camera);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red);
+
+	return HitResult;
 }
 
 // ~End IFPSCharacterInterface Override

@@ -8,6 +8,8 @@
 
 class USkeletalMeshComponent;
 class USphereComponent;
+class UInputMappingContext;
+class UInputAction;
 
 UCLASS()
 class ARENAFPS_API AFPSWeaponBase : public AActor
@@ -20,11 +22,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-
-
 
 public:
 	/* Getters / Setters */
@@ -33,6 +30,15 @@ public:
 
 	AActor* GetActorOwner() const { return ActorOwner; }
 	void SetActorOwner(AActor* NewOwner) { ActorOwner = NewOwner; }
+
+
+	/* Input */
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> IMC_Weapon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Fire;
+
 
 protected:
 	/* Variables */
@@ -50,8 +56,15 @@ protected:
 	TObjectPtr<USphereComponent> SphereCollisionComp;
 
 
+	
+
+
 	/* Functions */
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnFire();
 };

@@ -36,10 +36,7 @@ void AFPSWeaponBase::BeginPlay()
 	
 }
 
-
-void AFPSWeaponBase::Tick(float DeltaTime)
+void AFPSWeaponBase::OnFire_Implementation()
 {
-	Super::Tick(DeltaTime);
-
+	Cast<IFPSCharacterInterface>(GetActorOwner())->GetLookLocation(FPWeaponMesh->GetSocketLocation("MuzzleFlash"), 10000.f);
 }
-

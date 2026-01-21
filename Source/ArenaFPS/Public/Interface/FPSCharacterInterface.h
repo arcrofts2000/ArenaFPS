@@ -25,4 +25,5 @@ class ARENAFPS_API IFPSCharacterInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void AttachWeaponToActor(AFPSWeaponBase* WeaponClass) = 0;
+	virtual FHitResult GetLookLocation(FVector StartLocation, float ShotDistance) = 0;
 };

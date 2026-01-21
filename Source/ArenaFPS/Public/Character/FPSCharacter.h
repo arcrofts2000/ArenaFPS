@@ -34,6 +34,7 @@ public:
 public:
 	/* ~Begin IFPSCharacterInterface Override */
 	virtual void AttachWeaponToActor(AFPSWeaponBase* WeaponClass) override;
+	virtual FHitResult GetLookLocation(FVector StartLocation, float ShotDistance) override;
 	/* ~End IFPSCharacterInterface Override */
 
 
@@ -47,6 +48,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	FName RightHandSocketName;
+
 
 	/* Components */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
